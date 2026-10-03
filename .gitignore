@@ -1,3 +1,11 @@
+# Datasets and archives
+road_damage_subset/
+*.zip
+*.tar.gz
+images/
+labels/
+*.cache
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
