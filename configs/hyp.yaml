@@ -1,0 +1,42 @@
+# ==============================================================
+# Hyperparameter Configuration for Road Damage Detection (RDD)
+# Managed centrally: updates apply to all Kaggle runs via git pull
+# ==============================================================
+
+# --- Training Basics ---
+epochs: 100
+batch: 16
+imgsz: 640
+patience: 25              # Early stopping patience
+cache: ram                # Cache dataset to RAM for speed
+workers: 4
+optimizer: AdamW          # SGD, Adam, AdamW
+lr0: 0.001                # Initial learning rate
+lrf: 0.01                 # Final learning rate fraction (lr0 * lrf)
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3.0
+
+# --- Loss Weights ---
+box: 7.5                  # Bounding box loss gain
+cls: 0.5                  # Class loss gain
+dfl: 1.5                  # Distribution focal loss gain
+
+# --- DATA AUGMENTATION: ALL DEACTIVATED (0.0) ---
+mosaic: 0.0               # Disabled (Default is 1.0)
+mixup: 0.0                # Disabled
+copy_paste: 0.0           # Disabled
+fliplr: 0.0               # Disabled horizontal flip (Default is 0.5)
+flipud: 0.0               # Disabled vertical flip
+degrees: 0.0              # Disabled rotation
+translate: 0.0            # Disabled translation (Default is 0.1)
+scale: 0.0                # Disabled zoom scale (Default is 0.5)
+shear: 0.0                # Disabled shear
+perspective: 0.0          # Disabled perspective distortion
+erasing: 0.0              # Disabled random cutouts (Default is 0.4)
+
+# Color shifts
+hsv_h: 0.0                # Disabled hue jitter
+hsv_s: 0.0                # Disabled saturation jitter
+hsv_v: 0.0                # Disabled brightness jitter
+bgr: 0.0                  # Disabled channel flip
