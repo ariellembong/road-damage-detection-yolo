@@ -1,12 +1,12 @@
 # Machine Learning Data & Artifacts
 data/
-runs/
-results/
+# runs/
+# results/
 wandb/
-*.pt
-*.onnx
+# *.pt
+# *.onnx
 *.engine
-*.zip
+# *.zip
 road_damage_subset/
 
 # Python Cache
