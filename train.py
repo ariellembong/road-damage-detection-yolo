@@ -68,6 +68,10 @@ def prepare_dataset_yaml(data_path: str) -> str:
             return data_path
 
         val_subpath = cfg.get("val", "val/images")
+        if isinstance(val_subpath, list):
+            val_subpath = val_subpath[0] if val_subpath else "val/images"
+        val_subpath = str(val_subpath)
+
         configured_path = Path(cfg.get("path", ""))
 
         # Check if validation images exist at the configured path
