@@ -86,7 +86,7 @@ def create_data_yaml(dest_path: Path, class_names: dict = DEFAULT_CLASSES):
     """Generates the data.yaml configuration file for YOLO."""
     dest_path = Path(dest_path)
     yaml_data = {
-        "path": str(dest_path.resolve()),
+        "path": ".",  # Relative to data.yaml directory for cross-environment portability (local / Kaggle input / Colab)
         "train": "train/images",
         "val": "val/images",
         "test": "test/images",

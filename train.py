@@ -48,6 +48,52 @@ def setup_wandb(project_name: str):
     os.environ["WANDB_PROJECT"] = project_name
 
 
+def prepare_dataset_yaml(data_path: str) -> str:
+    """
+    Validates and auto-corrects dataset YAML configuration.
+    Fixes the common issue where 'path' in data.yaml was hardcoded to an absolute
+    path during preprocessing (e.g. /kaggle/working/road-damage-detection-yolo/data),
+    but the dataset is later mounted under /kaggle/input/...
+    """
+    yaml_file = Path(data_path).resolve()
+    if not yaml_file.exists():
+        return data_path
+
+    try:
+        import yaml
+        with open(yaml_file, "r") as f:
+            cfg = yaml.safe_load(f)
+
+        if not isinstance(cfg, dict):
+            return data_path
+
+        val_subpath = cfg.get("val", "val/images")
+        configured_path = Path(cfg.get("path", ""))
+
+        # Check if validation images exist at the configured path
+        path_valid = (configured_path / val_subpath).exists() if str(configured_path) else False
+
+        if not path_valid:
+            # Check if images actually exist relative to the YAML file's location
+            actual_dir = yaml_file.parent
+            if (actual_dir / val_subpath).exists():
+                print(f"⚠️ Notice: 'path: {configured_path}' defined in data.yaml does not exist on disk.")
+                print(f"🔄 Auto-redirecting dataset root path to: {actual_dir}")
+                cfg["path"] = str(actual_dir)
+
+                # Write fixed YAML to writable working directory
+                fixed_yaml = Path("/kaggle/working/data_auto_fixed.yaml") if Path("/kaggle/working").exists() else Path("./data_auto_fixed.yaml")
+                with open(fixed_yaml, "w") as f_out:
+                    yaml.dump(cfg, f_out, default_flow_style=False)
+                
+                print(f"✅ Created auto-corrected data configuration at: {fixed_yaml}")
+                return str(fixed_yaml.resolve())
+    except Exception as e:
+        print(f"⚠️ Warning during data.yaml verification: {e}")
+
+    return data_path
+
+
 def archive_results(source_dir: Path, zip_dest: str):
     """Zips training artifacts for 1-click download in Kaggle."""
     source_dir = Path(source_dir)
@@ -63,13 +109,16 @@ def archive_results(source_dir: Path, zip_dest: str):
 def main():
     args = parse_args()
 
+    # Auto-adjust data.yaml if path was hardcoded in another environment
+    data_path = prepare_dataset_yaml(args.data)
+
     # 1. Setup Tracking via Weights & Biases
     setup_wandb(args.project)
 
     print("==================================================")
     print(f"🚀 Starting Run: {args.name}")
     print(f"Model: {args.model}")
-    print(f"Data: {args.data}")
+    print(f"Data: {data_path}")
     print(f"Config: {args.cfg}")
     print("==================================================")
 
@@ -78,7 +127,7 @@ def main():
 
     # 3. Build Training Arguments
     train_kwargs = {
-        "data": args.data,
+        "data": data_path,
         "cfg": args.cfg,
         "device": args.device,
         "project": args.project,
@@ -104,7 +153,9 @@ def main():
     print(f"Validation mAP50-95: {val_metrics.box.map:.4f}")
 
     # 6. Archive results for 1-click download on Kaggle
-    output_dir = Path(args.project) / args.name
+    output_dir = Path(getattr(model.trainer, "save_dir", Path("runs/detect") / args.project / args.name))
+    if not output_dir.exists():
+        output_dir = Path(args.project) / args.name
     archive_dest = f"/kaggle/working/{args.name}_results" if Path("/kaggle/working").exists() else f"./results/{args.name}_results"
     archive_results(output_dir, archive_dest)
 
