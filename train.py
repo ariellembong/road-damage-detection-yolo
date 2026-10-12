@@ -22,7 +22,7 @@ def parse_args():
     # Run Metadata
     parser.add_argument("--name", type=str, default=None, help="Unique run name on W&B and local runs")
     parser.add_argument("--project", type=str, default="road-damage-detection", help="W&B project name")
-    #parser.add_argument("--device", type=str, default=None, help="CUDA device index (e.g. '0' or 'cpu')")
+    parser.add_argument("--device", type=str, default=None, help="CUDA device index (e.g. '0' or 'cpu')")
     parser.add_argument("--resume", action="store_true", help="Resume training from previous checkpoint")
     
     # Optional CLI overrides (if specified, overrides configs/hyp.yaml)
@@ -133,13 +133,10 @@ def main():
     train_kwargs = {
         "data": data_path,
         "cfg": args.cfg,
-        "device": args.device,
         "project": args.project,
         "name": args.name,
         "resume": args.resume,
-        "save": True,
-        "plots": True,
-        "amp": True,
+        "save": True
     }
 
     if args.epochs is not None:
