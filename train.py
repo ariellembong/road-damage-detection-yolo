@@ -15,14 +15,14 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Train YOLO Model for Road Damage Detection")
 
     # Experiment Configuration
-    parser.add_argument("--model", type=str, default="yolo12s.pt", help="Base model weights or path to checkpoint")
+    parser.add_argument("--model", type=str, default=None, help="Base model weights or path to checkpoint")
     parser.add_argument("--data", type=str, default="/kaggle/input/road-damage-dataset/data/data.yaml", help="Path to data.yaml")
     parser.add_argument("--cfg", type=str, default="configs/hyp.yaml", help="Path to hyperparameter configuration file")
     
     # Run Metadata
-    parser.add_argument("--name", type=str, default="exp_yolo12s", help="Unique run name on W&B and local runs")
+    parser.add_argument("--name", type=str, default=None, help="Unique run name on W&B and local runs")
     parser.add_argument("--project", type=str, default="road-damage-detection", help="W&B project name")
-    parser.add_argument("--device", type=str, default="0", help="CUDA device index (e.g. '0' or 'cpu')")
+    parser.add_argument("--device", type=str, default=None, help="CUDA device index (e.g. '0' or 'cpu')")
     parser.add_argument("--resume", action="store_true", help="Resume training from previous checkpoint")
     
     # Optional CLI overrides (if specified, overrides configs/hyp.yaml)

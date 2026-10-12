@@ -9,13 +9,13 @@ batch: 16
 imgsz: 640
 patience: 25              # Early stopping patience
 cache: ram                # Cache dataset to RAM for speed
-workers: 4
 optimizer: AdamW          # SGD, Adam, AdamW
 lr0: 0.001                # Initial learning rate
 lrf: 0.01                 # Final learning rate fraction (lr0 * lrf)
 momentum: 0.937
 weight_decay: 0.0005
 warmup_epochs: 3.0
+device: [0, 1]
 
 # --- Loss Weights ---
 box: 7.5                  # Bounding box loss gain
