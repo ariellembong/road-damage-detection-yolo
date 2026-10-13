@@ -136,7 +136,6 @@ def main():
         "project": args.project,
         "name": args.name,
         "resume": args.resume,
-        "save": True
     }
 
     if args.epochs is not None:
@@ -149,7 +148,9 @@ def main():
 
     # 5. Final Validation on Test/Val Split
     print("\n--- 📊 Running Final Validation Evaluation ---")
-    val_metrics = model.val()
+    val_metrics = model.val(
+        split="test"
+    )
     print(f"Validation mAP50:    {val_metrics.box.map50:.4f}")
     print(f"Validation mAP50-95: {val_metrics.box.map:.4f}")
 
