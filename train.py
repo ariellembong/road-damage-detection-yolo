@@ -7,7 +7,7 @@ import argparse
 import os
 import shutil
 from pathlib import Path
-from ultralytics import YOLO
+from ultralytics import YOLO, settings
 import wandb
 
 
@@ -45,6 +45,7 @@ def setup_wandb(project_name: str):
         else:
             print("ℹ️ W&B API Key not found in secrets. Running offline or with cached login.")
 
+    settings.update({"wandb": True})
     os.environ["WANDB_PROJECT"] = project_name
 
 
