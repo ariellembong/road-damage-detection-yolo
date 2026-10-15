@@ -150,7 +150,7 @@ def main():
     # 5. Final Validation on Test/Val Split
     print("\n--- 📊 Running Final Validation Evaluation ---")
     val_metrics = model.val(
-        split="test"
+        split="val"
     )
     print(f"Validation mAP50:    {val_metrics.box.map50:.4f}")
     print(f"Validation mAP50-95: {val_metrics.box.map:.4f}")
